@@ -67,6 +67,16 @@ const PrivateRoomInteraction = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // 🔥 Check if they are authenticated before sending
+    if (!token || !user) {
+      alert("📡 Comm-link offline! Your spaceship must be logged in to transmit messages.");
+      navigate("/login");
+      return;
+    }
+
     socket.emit("sendMessage", {
       roomId: roomid,
       message: newMessage,

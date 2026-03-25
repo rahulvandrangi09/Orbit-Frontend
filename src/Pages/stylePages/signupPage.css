@@ -102,3 +102,43 @@
     width: 100%;
   }
 }
+
+/* Password Eye Wrapper */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 45px; /* Make room for the eye */
+}
+
+.eye-btn {
+  position: absolute;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease;
+}
+
+.eye-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Orbit Thematic Error Alert */
+.orbit-error {
+  background: rgba(255, 92, 92, 0.1);
+  border: 2px solid #ff5c5c;
+  color: #ff5c5c;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-family: "DynaPuff", cursive;
+  font-size: 15px;
+  box-shadow: 4px 4px 0px rgba(255, 92, 92, 0.3);
+  text-align: center;
+}

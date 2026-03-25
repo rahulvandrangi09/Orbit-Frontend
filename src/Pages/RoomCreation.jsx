@@ -10,24 +10,30 @@ const RoomCreation = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+    const BASE_URL =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `${BASE_URL}/api/rooms/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: roomName,
-            type: visibility.toUpperCase(),
-          }),
+      if (!token) {
+        alert(
+          "Please Login!!",
+        );
+        navigate("/login");
+        return;
+      }
+
+      const res = await fetch(`${BASE_URL}/api/rooms/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          name: roomName,
+          type: visibility.toUpperCase(),
+        }),
+      });
 
       const data = await res.json();
 
@@ -37,9 +43,7 @@ const RoomCreation = () => {
       }
 
       if (data.room.type === "PUBLIC") {
-        setGeneratedLink(
-          `${BASE_URL}/publicroom/${data.room.id}`,
-        );
+        setGeneratedLink(`${BASE_URL}/publicroom/${data.room.id}`);
       } else {
         setGeneratedLink(data.inviteLink);
       }
