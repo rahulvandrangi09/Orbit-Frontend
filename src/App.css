@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'DynaPuff', cursive;
+    font-weight: 400;
+}
+
+body {
+  background: radial-gradient(circle at center, #0a1e3d 0%, #06152c 100%);
+  overflow-x: hidden;
+}

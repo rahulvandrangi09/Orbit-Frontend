@@ -1,0 +1,97 @@
+/* LOGIN PAGE LAYOUT */
+.login-page {
+  min-height: 80vh;
+  display: flex;
+   height: calc(100vh - 70px);
+  margin-top: 70px;
+  justify-content: flex-start; /* Aligns to left like your image */
+  align-items: center;
+  padding-left: 10%;
+  font-family: "DynaPuff", cursive;
+}
+
+.login-container {
+  max-width: 450px;
+  width: 100%;
+}
+
+.login-title {
+  font-size: 48px;
+  color: #7ec8ff;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px rgba(126, 200, 255, 0.3);
+}
+
+/* FORM STYLING */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group label {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.input-group input {
+  background: transparent;
+  border: 2px solid #ff7e7e; /* Reddish border from image */
+  padding: 12px 15px;
+  color: white;
+  font-size: 16px;
+  border-radius: 0;
+  /* Neobrutalist Shadow */
+  box-shadow: 4px 4px 0px #86d5ff;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  box-shadow: 6px 6px 0px #7fff4e;
+  transform: translate(-2px, -2px);
+}
+
+/* LINK STYLING */
+.auth-switch {
+  color: #fff;
+  font-size: 14px;
+}
+
+.auth-switch a {
+  color: #7ec8ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+/* BUTTON ADJUSTMENT */
+.login-btn {
+  align-self: flex-start;
+  margin-top: 10px;
+  padding: 12px 40px;
+}
+
+/* MOBILE VIEW */
+@media (max-width: 768px) {
+  .login-page {
+    padding: 40px 20px;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .login-btn {
+    align-self: center;
+    width: 100%;
+  }
+}

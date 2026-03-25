@@ -1,0 +1,104 @@
+/* SHARED AUTH LAYOUT (Login & Signup) */
+.auth-page {
+  min-height: 95vh;
+   height: calc(100vh - 70px);
+  margin-top: 70px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  padding-left: 10%;
+  font-family: "DynaPuff", cursive;
+  position: relative;
+  z-index: 5;
+}
+
+.auth-container {
+  max-width: 450px;
+  width: 100%;
+}
+
+.auth-title {
+  font-size: 52px;
+  color: #7ec8ff;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* THE LAYERED INPUT DESIGN */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-group label {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.input-group input {
+  background: transparent;
+  /* Red border on top and left as per your image */
+  border-top: 1.5px solid #ff7e7e;
+  border-left: 1.5px solid #ff7e7e;
+  border-bottom: 1px solid #7ec8ff; 
+  border-right: 1px solid #7ec8ff;
+  
+  padding: 12px 15px;
+  color: white;
+  font-size: 18px;
+  border-radius: 0;
+  
+  /* The Blue "Layered" Shadow */
+  box-shadow: 4px 4px 0px #86d5ff;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  box-shadow: 6px 6px 0px #7fff4e; /* Changes to Green glow on focus */
+  border-color: #7fff4e;
+  transform: translate(-2px, -2px);
+}
+
+/* BUTTON CUSTOMIZATION */
+.auth-btn {
+  align-self: flex-start;
+  margin-top: 15px;
+  padding: 15px 35px;
+  font-size: 18px;
+  background: #a3ff6c; /* Neon green from your image */
+  color: #000;
+  font-weight: 500;
+  border: 1px solid #000;
+  box-shadow: 4px 4px 0px #86d5ff;
+}
+
+.auth-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 6px 6px 0px #003b4f;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+  .auth-page {
+    padding-left: 5%;
+    padding-right: 5%;
+    justify-content: center;
+  }
+  .auth-container {
+    text-align: center;
+  }
+  .auth-btn {
+    align-self: center;
+    width: 100%;
+  }
+}

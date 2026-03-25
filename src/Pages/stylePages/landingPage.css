@@ -1,0 +1,660 @@
+/* STAR BACKGROUND */
+
+/* HERO SECTION */
+.hero {
+  position: relative;
+  min-height: 95vh;
+  height: auto;
+  display: flex;
+  align-items: center;
+  padding: 0 80px;
+  /* overflow: hidden; */
+  font-family: "Dynapuff", sans-serif;
+}
+
+.page-content {
+  margin-top: 70px; /* same as navbar height */
+}
+
+
+body {
+  overflow-x: hidden;
+}
+
+
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+/* HERO CONTENT */
+.hero-content {
+  position: relative;
+  max-width: 650px;
+  z-index: 2;
+}
+
+/* MAIN HEADING */
+.hero h1 {
+  font-size: 56px;
+  font-weight: 600;
+  color: #7ec8ff;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  animation: heroTitleSlideIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  text-shadow: 0 0 20px rgba(126, 200, 255, 0.3);
+}
+
+@keyframes heroTitleSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) translateX(-20px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* PARAGRAPH */
+.hero p {
+  font-size: 18px;
+  color: #e6f0ff;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 600px;
+  animation: heroContentFadeIn 1.2s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+@keyframes heroContentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* BUTTON WRAPPER */
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  z-index: 20;
+  animation: heroButtonsFadeIn 1.4s ease-out 0.6s forwards;
+  opacity: 0;
+}
+
+@keyframes heroButtonsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background: #7fff4e;
+  color: #002b36;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid black;
+  border-radius: 0px;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px #86d5ff, 0 0 20px rgba(127, 255, 78, 0);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 8px 8px 0px #003b4f, 0 0 30px rgba(127, 255, 78, 0.6);
+  background: #8fff5e;
+}
+
+.btn-primary:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* SECONDARY BUTTON */
+.btn-secondary {
+  background: #9be7ff;
+  color: #191717;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0px;
+  border: 1px solid black;
+  box-shadow: 5px 5px 0px #86d5ff, 0 0 20px rgba(155, 231, 255, 0);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-secondary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 8px 8px 0px #002b36, 0 0 30px rgba(155, 231, 255, 0.6);
+  background: #adffff;
+}
+
+.btn-secondary:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.key-features {
+  position: relative;
+padding: 40px 80px 60px 80px;
+  text-align: center;
+  transition: transform 0.4s ease-out, filter 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 42px;
+  font-weight: 600;
+  color: #7ec8ff;
+  margin-bottom: 30px;
+  font-family: "Dynapuff", sans-serif;
+  position: relative;
+  display: inline-block;
+  animation: titleUnderline 1s ease-out;
+  text-shadow: 0 0 20px rgba(126, 200, 255, 0.2);
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7ec8ff, #7fff4e, #7ec8ff);
+  animation: expandWidth 1.2s ease-out 0.3s forwards;
+}
+
+@keyframes titleUnderline {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Features Grid */
+.features-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-height: fit-content;
+  z-index: 1;
+  gap: 30px;
+  overflow: visible;
+}
+
+
+/* Feature Card */
+.feature-card {
+  background: #f1f35c;
+  padding: 18px 28px;
+  font-size: 18px;
+  font-weight: 500;
+  border: 1px solid black;
+  border-radius: 0px;
+  box-shadow: 5px 5px 0px #86d5ff;
+  cursor: pointer;
+  min-width: 150px;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.02) translateY(-3px);
+  background: #ffff80;
+  box-shadow: 8px 8px 0px #0b3d5c, 0 0 30px rgba(126, 200, 255, 0.6);
+  filter: brightness(1.15);
+}
+
+/* ============================= */
+/* WHY ORBIT SECTION */
+/* ============================= */
+
+.why-orbit {
+  position: relative;
+  padding: 60px 80px 100px 80px;
+  font-family: "DynaPuff", cursive;
+  color: #eaf6ff;
+  transition: transform 0.4s ease-out, filter 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Section Title */
+.why-orbit {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.why-orbit .section-title {
+  font-size: 42px;
+  font-weight: 600;
+  color: #7ec8ff;
+  margin-bottom: 50px;
+}
+
+/* Container */
+.why-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 900px;
+}
+
+/* Each Item */
+.why-item {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease, background 0.4s ease;
+  padding: 20px;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+
+.why-item:hover {
+  transform: translateX(15px);
+  border-left-color: #7ec8ff;
+  filter: brightness(1.05);
+}
+
+.why-item h3 {
+  font-size: 24px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  margin-bottom: 12px;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.why-item:hover h3 {
+  color: #7ec8ff;
+}
+
+.why-item p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #d6eaff;
+  max-width: 750px;
+}
+
+/* ============================= */
+/* USE CASES SECTION */
+/* ============================= */
+
+.usecases {
+  position: relative;
+  padding: 70px 0 100px 0;
+  text-align: center;
+  font-family: "DynaPuff", cursive;
+  overflow: hidden;
+  transition: transform 0.4s ease-out, filter 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Title */
+.usecases {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.usecases .section-title {
+  font-size: 42px;
+  color: #7ec8ff;
+  margin-bottom: 40px;
+}
+
+/* Marquee Wrapper */
+.marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 20px 0;
+  display: inline-block;
+}
+
+/* Gradient Fade Edges */
+.marquee::before,
+.marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Left Fade */
+.marquee::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(6, 21, 44, 1) 0%,
+    rgba(6, 21, 44, 0.8) 40%,
+    rgba(6, 21, 44, 0) 100%
+  );
+}
+
+/* Right Fade */
+.marquee::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    rgba(6, 21, 44, 1) 0%,
+    rgba(6, 21, 44, 0.8) 40%,
+    rgba(6, 21, 44, 0) 100%
+  );
+}
+
+/* Moving Content */
+.marquee-content {
+  display: inline-flex;
+  gap: 60px;
+  animation: scrollLeft 25s linear infinite !important;
+  will-change: transform;
+}
+
+/* Each Item */
+.marquee-content span {
+  font-size: 20px;
+  color: #ffffff;
+  opacity: 0.9;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Animation */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 30px));
+  }
+}
+
+/* ============================= */
+/* CTA SECTION - SYNCED WITH HERO */
+/* ============================= */
+
+.cta-section {
+  position: relative;
+  min-height: 40vh; /* Adjust height as needed */
+  display: flex;
+  align-items: center; /* Centers vertically */
+  padding: 100px 80px; /* Same horizontal padding as Hero */
+  overflow: hidden;
+  background-color: transparent; /* Assuming background is handled by parent or stars */
+  transition: transform 0.4s ease-out, filter 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.cta-container {
+  position: relative;
+  max-width: 650px; /* Same max-width as .hero-content */
+  z-index: 2;
+  text-align: left;
+}
+
+/* Match Hero H1 styling for the CTA title */
+.cta-section .section-title {
+  font-size: 56px; /* Matches .hero h1 */
+  font-weight: 600;
+  color: #7ec8ff;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-align: left; /* Ensures it doesn't inherit center-align from other sections */
+}
+
+.cta-sub {
+  font-size: 18px; /* Matches .hero p */
+  color: #e6f0ff;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  font-family: "Dynapuff", sans-serif;
+}
+
+/* Reusing your hero-buttons, btn-primary, and btn-secondary from your existing CSS */
+
+/* Responsive Fix for Mobile */
+@media (max-width: 768px) {
+  .cta-section {
+    padding: 0 40px;
+    justify-content: center;
+  }
+
+  .cta-container {
+    text-align: center;
+  }
+
+  .cta-section .section-title {
+    font-size: 38px;
+    text-align: center;
+  }
+}
+
+
+/* ============================= */
+/* 3. BUTTON & CARD INTERACTIONS */
+/* ============================= */
+
+.btn-primary,
+.btn-secondary {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0px 10px 20px rgba(127, 255, 78, 0.3); /* Green glow */
+}
+
+.btn-secondary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0px 10px 20px rgba(155, 231, 255, 0.3); /* Blue glow */
+}
+
+/* ============================= */
+/* 4. KEY FEATURES HOVER */
+/* ============================= */
+
+/* Removed duplicate - using the enhanced hover from line 254 */
+
+/* ============================= */
+/* 5. SMOOTH SCROLLING */
+/* ============================= */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================= */
+/* 6. SCROLL ANIMATIONS - FADE IN/UP */
+/* ============================= */
+
+/* Default state - hidden for scroll animation */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Active state - shown after scroll into view */
+.scroll-animate.is-visible {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Stagger animations for child elements */
+.scroll-animate.is-visible .section-title {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.scroll-animate.is-visible .feature-card,
+.scroll-animate.is-visible .marquee {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.scroll-animate.is-visible .why-item {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Stagger effect for child elements */
+.scroll-animate.is-visible .feature-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.scroll-animate.is-visible .feature-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.scroll-animate.is-visible .feature-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.scroll-animate.is-visible .feature-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.scroll-animate.is-visible .why-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.scroll-animate.is-visible .why-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.scroll-animate.is-visible .why-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ============================= */
+/* MOBILE RESPONSIVE FIX */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  .hero,
+  .key-features,
+  .why-orbit,
+  .cta-section {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .usecases {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .cta-section .section-title {
+    font-size: 30px;
+  }
+
+  .hero p,
+  .cta-sub {
+    font-size: 15px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .why-item h3{
+    font-weight: 400;
+    line-height: 1.5;
+  }  
+
+  .why-container {
+    gap: 30px;
+  }
+
+  .why-item:hover {
+    transform: none; /* Disable sideways push on mobile */
+  }
+
+  .marquee::before,
+  .marquee::after {
+    display: none; /* Remove gradient edges on small screens */
+  }
+
+}
+

@@ -1,0 +1,154 @@
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 18px 40px;
+  background: linear-gradient(to right, #031a3d, #021533);
+  border-bottom: 2px solid #b4002d;
+  z-index: 1000;
+}
+
+/* Left Section */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-right{
+  display: flex;
+
+}
+
+.nav-left a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.logo {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.tagline {
+  font-size: 16px;
+  color: #9aa4b2;
+}
+
+/* Right Section */
+.nav-right {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.nav-right a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.login {
+  color: white;
+}
+
+.signup {
+  color: #ffffff; /* light blue */
+  margin-left: 5px;
+}
+
+.divider {
+  color: white;
+  margin: 0 6px;
+}
+
+/* Hover Effects */
+.nav-right a:hover {
+  opacity: 0.8;
+}
+
+.user-info .username {
+  color: white;
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.user-info .username::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px; /* thickness of the underline */
+  width: 0;
+  background: white;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* smooth draw effect */
+}
+
+.user-info .username:hover {
+  transform: scale(1.08); /* slightly bigger */
+}
+
+.user-info .username:hover::after {
+  width: 100%; /* underline animates fully */
+}
+
+/* ========================= */
+/* 📱 RESPONSIVE NAVBAR */
+/* ========================= */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 14px 20px;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .nav-right {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .nav-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .nav-right {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 14px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+}
+

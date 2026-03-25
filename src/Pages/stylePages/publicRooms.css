@@ -1,0 +1,167 @@
+.rooms-page {
+  min-height: 100vh;
+  background-color: #06152c;
+  color: #fff;
+   height: calc(100vh - 70px);
+  margin-top: 70px;
+  font-family: "DynaPuff", cursive;
+  display: flex;
+  flex-direction: column;
+}
+
+.rooms-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  /* This ensures the grid takes up the remaining height of the screen */
+  flex: 1; 
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* SIDEBARS */
+.rooms-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px 20px; /* Aligns with content padding */
+}
+
+.rooms-sidebar.right {
+  align-items: flex-start;
+  position: relative;
+}
+
+.sidebar-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* CENTER CONTENT */
+.rooms-content {
+  padding: 40px;
+  /* These borders will now stretch the full height of the grid column */
+  border-left: 2px solid #ff7e7e; 
+  border-right: 2px solid #ff7e7e;
+  background-color: rgba(255, 255, 255, 0.02); /* Optional: subtle depth */
+}
+
+.rooms-title {
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+.rooms-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* ROOM CARDS */
+.room-card {
+  background: #d9ffef; /* Light mint background */
+  border: 2px solid #000;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 6px 6px 0px #86d5ff;
+  color: #000;
+}
+
+.room-name {
+  font-size: 24px;
+  text-decoration: underline;
+  margin-bottom: 8px;
+}
+
+.room-desc {
+  font-size: 14px;
+  max-width: 450px;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.online-count {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.enter-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* SEARCH BAR */
+.search-container {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  display: flex;
+  background: #112240;
+  border: 2px solid #ff7e7e;
+  box-shadow: 4px 4px 0px #86d5ff;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 15px;
+  color: white;
+  outline: none;
+}
+
+.search-btn {
+  padding: 0 25px;
+  background: transparent;
+  color: white;
+  border: none;
+  border-left: 1.5px solid #ff7e7e;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* RIGHT SIDEBAR USER INFO */
+.user-info-section {
+  text-align: left;
+}
+
+.join-label { font-size: 18px; color: #fff; }
+.username-display { font-size: 16px; color: #fff; margin-top: 5px; }
+
+.profile-trigger {
+  margin-top: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-trigger:hover { transform: scale(1.1); }
+
+.user-icon-placeholder {
+  font-size: 30px;
+  background: #112240;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #7ec8ff;
+  box-shadow: 0 0 15px rgba(126, 200, 255, 0.3);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .rooms-layout {
+    grid-template-columns: 1fr;
+  }
+  .rooms-content { 
+    border-left: none; 
+    border-right: none; 
+    border-top: 2px solid #ff7e7e; 
+  }
+}

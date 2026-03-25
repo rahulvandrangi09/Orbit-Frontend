@@ -1,0 +1,164 @@
+/* ROOM CREATION PAGE */
+.room-creation-page {
+  min-height: 100vh;
+  color: #fff;
+   height: calc(100vh - 70px);
+  margin-top: 70px;
+  font-family: "DynaPuff", cursive;
+  display: flex;
+  flex-direction: column;
+}
+
+.creation-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.creation-sidebar {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.creation-content {
+  padding: 40px 60px;
+  border-left: 2px solid #ff7e7e; /* The signature red vertical line */
+}
+
+.creation-title {
+  font-size: 42px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+.creation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 500px;
+}
+
+/* LINK & COPY SECTION */
+.link-section {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+}
+
+.copy-label {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.copy-box {
+  display: flex;
+  background: #112240;
+  border: 1.5px solid #ff7e7e;
+  box-shadow: 4px 4px 0px #86d5ff;
+}
+
+.copy-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  color: #7ec8ff;
+  font-size: 14px;
+  outline: none;
+}
+
+.copy-action {
+  background: transparent;
+  color: #fff;
+  border: none;
+  border-left: 1px solid #ff7e7e;
+  padding: 0 15px;
+  cursor: pointer;
+  font-family: "DynaPuff", cursive;
+}
+
+.invite-text {
+  font-size: 16px;
+  color: #e6f0ff;
+  margin: 10px 0;
+}
+
+.create-btn {
+  align-self: flex-start;
+  padding: 12px 40px;
+}
+
+.navigate-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .creation-layout {
+    grid-template-columns: 1fr;
+  }
+  .creation-content {
+    border-left: none;
+    border-top: 2px solid #ff7e7e;
+    padding: 40px 20px;
+  }
+}
+
+/* SELECT DROPDOWN STYLING */
+.input-group select {
+  background-color: transparent;
+  /* Red/Blue layered border to match your inputs */
+  border-top: 1.5px solid #ff7e7e;
+  border-left: 1.5px solid #ff7e7e;
+  border-bottom: 1px solid #7ec8ff;
+  border-right: 1px solid #7ec8ff;
+  
+  padding: 12px 15px;
+  color: white;
+  font-family: "DynaPuff", cursive;
+  font-size: 18px;
+  border-radius: 0;
+  cursor: pointer;
+  appearance: none; /* Removes default browser arrow */
+  
+  /* The signature neobrutalist shadow */
+  box-shadow: 4px 4px 0px #86d5ff;
+  transition: all 0.2s ease;
+  
+  /* Custom arrow icon using a background image */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%237ec8ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 18px;
+}
+
+.input-group select:focus {
+  outline: none;
+  box-shadow: 6px 6px 0px #7fff4e; /* Green glow on focus */
+  transform: translate(-2px, -2px);
+}
+
+/* Styling the options (Dropdown List) */
+.input-group select option {
+  background-color: #0a1e3d; /* Matches your navy radial gradient */
+  color: white;
+  padding: 10px;
+}
+
+/* Ensure the label matches your input labels */
+.input-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+}
