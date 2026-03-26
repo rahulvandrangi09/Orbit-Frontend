@@ -1,6 +1,6 @@
 import React from "react";
 import './App.css';
-import LandingPage from "./Pages/landingPage";
+import LandingPage from "./Pages/LandingPage";
 import Footer from "./Components/Footer";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from "./Pages/LoginForm";
