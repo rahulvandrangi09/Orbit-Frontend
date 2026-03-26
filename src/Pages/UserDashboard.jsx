@@ -9,11 +9,15 @@ const UserDashboard = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // 🔥 NEW: State to hold the ticking relative time string
+  const [relativeTime, setRelativeTime] = useState("");
 
   const token = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
+  // 1. Load user and fetch rooms
   useEffect(() => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
@@ -26,7 +30,7 @@ const UserDashboard = () => {
         const response = await fetch(`${url}/api/rooms/my`, {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -39,7 +43,7 @@ const UserDashboard = () => {
           setError(data.message || "Failed to fetch rooms.");
           setRooms([]);
         } else {
-          setRooms(data.rooms || []); 
+          setRooms(data.rooms || []);
         }
       } catch (err) {
         console.error(err);
@@ -52,22 +56,53 @@ const UserDashboard = () => {
     fetchUserRooms();
   }, [token, storedUser, url]);
 
-  // 🔥 THE LOGOUT FUNCTION
+  // 🔥 2. THE DYNAMIC TIMER LOGIC
+  useEffect(() => {
+    if (!user.createdAt) return;
+
+    const calculateTime = () => {
+      const start = new Date(user.createdAt).getTime();
+      const now = new Date().getTime();
+      const diff = now - start;
+
+      if (diff < 0) return "0s";
+
+      const seconds = Math.floor((diff / 1000) % 60);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 30);
+      const months = Math.floor((diff / (1000 * 60 * 60 * 24 * 30)) % 12);
+      const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+
+      let timeString = "";
+      if (years > 0) timeString += `${years}y `;
+      if (months > 0) timeString += `${months}m `;
+      if (days > 0) timeString += `${days}d `;
+      timeString += `${hours}h ${minutes}m ${seconds}s`;
+
+      setRelativeTime(timeString);
+    };
+
+    // Initial calculation
+    calculateTime();
+
+    // Update every second
+    const timer = setInterval(calculateTime, 1000);
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, [user.createdAt]);
+
   const handleLogout = async () => {
     try {
-      // 1. Tell the backend we are logging out (optional for local JWTs, but good practice)
       await fetch(`${url}/api/auth/logout`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     } catch (err) {
       console.error("Backend logout failed:", err);
     } finally {
-      // 2. Obliterate the token and user data from the browser
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      
-      // 3. Kick them back to the login screen
       navigate("/login");
     }
   };
@@ -76,22 +111,31 @@ const UserDashboard = () => {
     <div className="dashboard-container">
       <Navbar isLoggedIn={true} user={user} />
 
-      {/* Welcome Section */}
       <section className="welcome-section">
         <h1 className="welcome-title">Welcome {user.username}</h1>
-        <p className="welcome-subtitle">
-          Thanks for traveling with us since:{" "}
-          {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
-        </p>
         
-        <div style={{ display: "flex", gap: "15px", justifyContent: "center", marginTop: "20px" }}>
+        {/* 🔥 Updated subtitle to show the ticking duration */}
+        <p className="welcome-subtitle">
+          Total Journey Duration: <span style={{ color: "#a3ff6c", fontWeight: "bold" }}>{relativeTime || "Calculating..."}</span>
+        </p>
+        <p style={{ fontSize: "14px", opacity: 0.7, marginTop: "5px" }}>
+          Coordinates established on: {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
           <button className="go-home-btn" onClick={() => navigate("/")}>
             Go Home
           </button>
-          {/* 🔥 THE LOGOUT BUTTON */}
-          <button 
-            className="go-home-btn" 
-            style={{ backgroundColor: "#ff7e7e", color: "#112240" }} 
+          <button
+            className="go-home-btn"
+            style={{ backgroundColor: "#ff7e7e", color: "#112240" }}
             onClick={handleLogout}
           >
             Logout
@@ -99,7 +143,6 @@ const UserDashboard = () => {
         </div>
       </section>
 
-      {/* Rooms Section */}
       <section className="rooms-section">
         <h2 className="rooms-heading">Your Rooms</h2>
 
@@ -116,7 +159,13 @@ const UserDashboard = () => {
               </div>
               <button
                 className="enter-btn"
-                onClick={() => navigate(`/${room.type.toLowerCase()}room/${room.id}`)}
+                onClick={() => {
+                  const path =
+                    room.type.toLowerCase() === "public"
+                      ? "publicroom"
+                      : "privateroom";
+                  navigate(`/${path}/${room.id}`);
+                }}
               >
                 Enter Room
               </button>

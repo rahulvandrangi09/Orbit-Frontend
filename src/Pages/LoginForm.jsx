@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './stylePages/loginPage.css';
 import Navbar from '../Components/Navbar';
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // 🔥 Added state
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // 🔥 Added loading state
   const navigate = useNavigate();
   
   const handleChange = (e) => {
@@ -18,6 +18,9 @@ const LoginForm = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // 🚀 Start loading
+    setError('');
+
     try {
       const response = await fetch(`${url}/api/auth/login`, {
         method: "POST",
@@ -27,8 +30,8 @@ const LoginForm = () => {
       const data = await response.json();
       
       if (!response.ok) {
-        // 🔥 Thematic Error Message
         setError("🛰️ Signal rejected! Incorrect username or password.");
+        setLoading(false);
         return;
       }
 
@@ -38,7 +41,8 @@ const LoginForm = () => {
 
     } catch (err) {
       console.error(err);
-      setError('☄️ Asteroid collision! Something went wrong communicating with the server.');
+      setError('☄️ Asteroid collision! Server communication lost.');
+      setLoading(false);
     }
   };
 
@@ -49,20 +53,15 @@ const LoginForm = () => {
         <div className="login-container reveal show">
           <h1 className="login-title">Login</h1>
           
-          {/* 🔥 Thematic Error Display */}
           {error && <div className="orbit-error">{error}</div>}
           
           <form onSubmit={handleSubmit} className="login-form">
             <div className="input-group">
               <label htmlFor="username">User Name</label>
               <input 
-                type="text" 
-                id="username" 
-                name="username" 
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Enter your username"
-                required 
+                type="text" id="username" name="username" 
+                value={formData.username} onChange={handleChange}
+                placeholder="Enter your username" required 
               />
             </div>
 
@@ -70,17 +69,13 @@ const LoginForm = () => {
               <label htmlFor="password">PassWord</label>
               <div className="password-wrapper">
                 <input 
-                  type={showPassword ? "text" : "password"} // 🔥 Toggle type
-                  id="password" 
-                  name="password" 
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  required 
+                  type={showPassword ? "text" : "password"} 
+                  id="password" name="password" 
+                  value={formData.password} onChange={handleChange}
+                  placeholder="Enter your password" required 
                 />
                 <button 
-                  type="button" 
-                  className="eye-btn" 
+                  type="button" className="eye-btn" 
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? '🙈' : '👁️'}
@@ -92,8 +87,8 @@ const LoginForm = () => {
               Don't have an account? Please <Link to="/signup">Sign up</Link>
             </p>
 
-            <button type="submit" className="btn-primary login-btn">
-              Lets Go!
+            <button type="submit" className="btn-primary login-btn" disabled={loading}>
+              {loading ? "Verifying Coordinates..." : "Lets Go!"}
             </button>
           </form>
         </div>

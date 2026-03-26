@@ -10,12 +10,15 @@ const PublicRoomInteraction = () => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  
+  // 🔥 New States for Typing Indicator
+  const [typingUsers, setTypingUsers] = useState([]);
+  const typingTimeoutRef = useRef(null);
   const messageEndRef = useRef(null);
 
   const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
   const currentUser = JSON.parse(localStorage.getItem("user")) || { username: "Guest" };
 
-  // Fetch old messages
   useEffect(() => {
     const fetchMessages = async () => {
       const token = localStorage.getItem("token");
@@ -40,12 +43,10 @@ const PublicRoomInteraction = () => {
     fetchMessages();
   }, [roomid, BASE_URL]);
 
-  // Socket join & connect (Fixed Race Condition)
   useEffect(() => {
     const token = localStorage.getItem("token");
     socket.auth = { token };
 
-    // Only connect if not already connected to avoid StrictMode double-firing
     if (!socket.connected) {
       socket.connect();
     }
@@ -56,36 +57,55 @@ const PublicRoomInteraction = () => {
       setMessages((prev) => [...prev, msg]);
     };
 
-    socket.on("receiveMessage", handleReceiveMessage);
+    // 🔥 Real-Time Listeners
+    const handleUserTyping = ({ username }) => {
+      setTypingUsers((prev) => (!prev.includes(username) ? [...prev, username] : prev));
+    };
 
-    // Cleanup: Remove listener, but DO NOT globally disconnect the socket
+    const handleUserStoppedTyping = ({ username }) => {
+      setTypingUsers((prev) => prev.filter((u) => u !== username));
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+    socket.on("userTyping", handleUserTyping);
+    socket.on("userStoppedTyping", handleUserStoppedTyping);
+
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
+      socket.off("userTyping", handleUserTyping);
+      socket.off("userStoppedTyping", handleUserStoppedTyping);
     };
   }, [roomid]);
 
-  // Send message
+  // 🔥 Handle Typing Event
+  const handleTyping = (e) => {
+    setNewMessage(e.target.value);
+    socket.emit("typing", { roomId: roomid, username: currentUser.username });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit("stopTyping", { roomId: roomid, username: currentUser.username });
+    }, 2000);
+  };
+
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
     
     const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    //  Check if they are authenticated before sending
-    if (!token || !user) {
-      alert("📡 Comm-link offline! Your spaceship must be logged in to transmit messages.");
+    if (!token) {
+      alert("📡 Comm-link offline! Your spaceship must be logged in.");
       navigate("/login");
       return;
     }
 
-    // Emit to backend
-    socket.emit("sendMessage", {
-      roomId: roomid,
-      message: newMessage,
-    });
+    // Clear typing instantly
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    socket.emit("stopTyping", { roomId: roomid, username: currentUser.username });
 
-    // Optimistically update UI
+    socket.emit("sendMessage", { roomId: roomid, message: newMessage });
+
     setMessages((prev) => [
       ...prev,
       { id: Date.now(), text: newMessage, user: currentUser.username },
@@ -93,27 +113,20 @@ const PublicRoomInteraction = () => {
     setNewMessage("");
   };
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, typingUsers]);
 
   return (
     <div className="chat-page">
       <Navbar isLoggedIn={true} user={currentUser} />
 
       <main className="chat-layout">
-        {/* Left Sidebar */}
         <aside className="chat-sidebar left">
-          <button className="sidebar-btn btn-secondary" onClick={() => navigate("/")}>
-            Back To Home
-          </button>
-          <button className="sidebar-btn btn-primary" onClick={() => navigate("/publicrooms")}>
-            Rooms List
-          </button>
+          <button className="sidebar-btn btn-secondary" onClick={() => navigate("/")}>Back To Home</button>
+          <button className="sidebar-btn btn-primary" onClick={() => navigate("/publicrooms")}>Rooms List</button>
         </aside>
 
-        {/* Center Chat Area */}
         <section className="chat-content">
           <h2 className="room-header">Public Room</h2>
           
@@ -131,6 +144,14 @@ const PublicRoomInteraction = () => {
                 );
               })
             )}
+
+            {/* 🔥 TYPING INDICATOR */}
+            {typingUsers.length > 0 && (
+              <div className="typing-indicator" style={{marginLeft: "15px"}}>
+                {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing
+                <div className="typing-dots"><span></span><span></span><span></span></div>
+              </div>
+            )}
             <div ref={messageEndRef} />
           </div>
 
@@ -138,21 +159,20 @@ const PublicRoomInteraction = () => {
             <input
               type="text"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleTyping}
               placeholder="Type your message..."
             />
             <button type="submit">Send</button>
           </form>
         </section>
 
-        {/* Right Sidebar */}
+        {/* Static Sidebar for Public Room */}
         <aside className="chat-sidebar right">
-          <h3 className="sidebar-title">People Online</h3>
+          <h3 className="sidebar-title">Joined as:</h3>
           <ul className="online-list">
             <li className="online-user">
               👤 <span className="neon-text">{currentUser.username}</span>
             </li>
-            {/* You can add dynamic online users here later */}
           </ul>
         </aside>
       </main>

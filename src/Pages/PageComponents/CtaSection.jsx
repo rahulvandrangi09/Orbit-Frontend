@@ -1,10 +1,10 @@
 import React from "react";
 import useScrollAnimation from "../../hooks/useScrollAnimation";
 import "../stylePages/landingPage.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 const CTA = () => {
   const ref = useScrollAnimation();
-
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <section className="cta-section scroll-animate" ref={ref}>
       {/* Ensures the star background persists */}
@@ -17,16 +17,16 @@ const CTA = () => {
         </p>
 
         <div className="hero-buttons">
-            {/* Enter Orbit leads to Login */}
-            <Link to="/login">
-              <button className="btn-primary">🚀 Enter Orbit</button>
-            </Link>
+          {/* Enter Orbit leads to Login */}
+          <Link to={user ? "/publicrooms" : "/login"}>
+            <button className="btn-primary">🚀 Enter Orbit</button>
+          </Link>
 
-            {/* Explore leads to the Public Rooms list */}
-            <Link to="/publicrooms">
-              <button className="btn-secondary">🌍 Explore Public Rooms</button>
-            </Link>
-          </div>
+          {/* Explore leads to the Public Rooms list */}
+          <Link to="/publicrooms">
+            <button className="btn-secondary">🌍 Explore Public Rooms</button>
+          </Link>
+        </div>
       </div>
     </section>
   );

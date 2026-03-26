@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import "./stylePages/roomCreation.css";
@@ -6,10 +6,25 @@ const RoomCreation = () => {
   const [roomName, setRoomName] = useState("");
   const [visibility, setVisibility] = useState("Public");
   const [generatedLink, setGeneratedLink] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({ username: "Guest" });
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error("Failed to parse user data", err);
+      }
+    }
+  }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const BASE_URL =
       import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
     try {
@@ -49,6 +64,8 @@ const RoomCreation = () => {
       }
     } catch (err) {
       console.error(err);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -59,7 +76,7 @@ const RoomCreation = () => {
 
   return (
     <div className="room-creation-page">
-      <Navbar isLoggedIn={true} user={{ username: "SomeXPerson" }} />
+      <Navbar isLoggedIn={true} user={{ username: {user} }} />
 
       <div className="creation-layout">
         {/* Left Sidebar */}
@@ -105,8 +122,8 @@ const RoomCreation = () => {
               </select>
             </div>
 
-            <button type="submit" className="btn-primary create-btn">
-              Create
+            <button type="submit" className="btn-primary create-btn" disabled={loading}>
+              {loading ? "Launching..." : "Create Room"}
             </button>
           </form>
 
@@ -125,11 +142,10 @@ const RoomCreation = () => {
 
               <button
                 className="btn-primary navigate-btn"
-                onClick={() =>
-                  navigate(
-                    `/${visibility.toLowerCase()}room/${generatedLink.split("/").pop()}`,
-                  )
-                }
+                onClick={() =>{
+                  const roomId = generatedLink.split("/").pop();
+                   navigate(`/${visibility.toLowerCase()}room/${roomId}`);
+                }}
               >
                 Navigate to Room
               </button>
