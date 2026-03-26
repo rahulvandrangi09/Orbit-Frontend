@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import "./stylePages/roomCreation.css";
+
 const RoomCreation = () => {
   const [roomName, setRoomName] = useState("");
   const [visibility, setVisibility] = useState("Public");
@@ -9,7 +10,6 @@ const RoomCreation = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({ username: "Guest" });
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -25,15 +25,12 @@ const RoomCreation = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const BASE_URL =
-      import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+    const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+    
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
-        alert(
-          "Please Login!!",
-        );
+        alert("Please Login!!");
         navigate("/login");
         return;
       }
@@ -51,20 +48,23 @@ const RoomCreation = () => {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         alert(data.message);
         return;
       }
 
+      // Point these to your FRONTEND routes, not BASE_URL (which is backend)
+      const frontendUrl = window.location.origin;
       if (data.room.type === "PUBLIC") {
-        setGeneratedLink(`${BASE_URL}/publicroom/${data.room.id}`);
+        setGeneratedLink(`${frontendUrl}/publicroom/${data.room.id}`);
       } else {
-        setGeneratedLink(data.inviteLink);
+        // Use the inviteLink provided by backend but ensure it uses frontend domain
+        const tokenPart = data.inviteLink.split('/').pop();
+        setGeneratedLink(`${frontendUrl}/privateroom/${tokenPart}`);
       }
     } catch (err) {
       console.error(err);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -76,29 +76,21 @@ const RoomCreation = () => {
 
   return (
     <div className="room-creation-page">
-      <Navbar isLoggedIn={true} user={{ username: {user} }} />
+      {/* FIXED: Passing user directly */}
+      <Navbar isLoggedIn={true} user={user} />
 
       <div className="creation-layout">
-        {/* Left Sidebar */}
         <aside className="creation-sidebar">
-          <button
-            className="btn-secondary sidebar-btn"
-            onClick={() => navigate("/")}
-          >
+          <button className="btn-secondary sidebar-btn" onClick={() => navigate("/")}>
             Back To Home
           </button>
-          <button
-            className="btn-primary sidebar-btn"
-            onClick={() => navigate("/publicrooms")}
-          >
-            Public Room
+          <button className="btn-primary sidebar-btn" onClick={() => navigate("/publicrooms")}>
+            Public Rooms
           </button>
         </aside>
 
-        {/* Main Content */}
         <main className="creation-content">
           <h1 className="creation-title">Create ROOM</h1>
-
           <form className="creation-form" onSubmit={handleCreate}>
             <div className="input-group">
               <label>Room Name</label>
@@ -110,18 +102,13 @@ const RoomCreation = () => {
                 required
               />
             </div>
-
             <div className="input-group">
               <label>Visibility</label>
-              <select
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
-              >
+              <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
                 <option value="Public">Public</option>
-                <option value="Private">Private</option>{" "}
+                <option value="Private">Private</option>
               </select>
             </div>
-
             <button type="submit" className="btn-primary create-btn" disabled={loading}>
               {loading ? "Launching..." : "Create Room"}
             </button>
@@ -132,19 +119,15 @@ const RoomCreation = () => {
               <label className="copy-label">Copy Link</label>
               <div className="copy-box">
                 <input type="text" readOnly value={generatedLink} />
-                <button className="copy-action" onClick={copyToClipboard}>
-                  Copy
-                </button>
+                <button className="copy-action" onClick={copyToClipboard}>Copy</button>
               </div>
-              <p className="invite-text">
-                You can invite your friends/team etc. With this Link
-              </p>
-
+              <p className="invite-text">Share this link to invite others!</p>
               <button
                 className="btn-primary navigate-btn"
-                onClick={() =>{
-                  const roomId = generatedLink.split("/").pop();
-                   navigate(`/${visibility.toLowerCase()}room/${roomId}`);
+                onClick={() => {
+                  const pathSegment = generatedLink.includes("privateroom") ? "privateroom" : "publicroom";
+                  const id = generatedLink.split("/").pop();
+                  navigate(`/${pathSegment}/${id}`);
                 }}
               >
                 Navigate to Room
