@@ -8,6 +8,7 @@
   font-family: "DynaPuff", cursive;
   display: flex;
   flex-direction: column;
+  
 }
 
 /* LAYOUT */
@@ -135,14 +136,16 @@
   border: 2px solid #ff7e7e;
   background: #0f1f3d;
   box-shadow: 6px 6px 0px #86d5ff;
+  min-height: 55px;
+  align-items: stretch;
 }
 
 .private-input input {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 18px;
-  font-size: 18px;
+ padding: 12px 15px;
+  font-size: 16px;
   color: white;
   outline: none;
   font-family: "DynaPuff", cursive;
@@ -152,11 +155,15 @@
   background: transparent;
   border: none;
   border-left: 2px solid #ff7e7e;
-  padding: 0 30px;
-  font-size: 20px;
+  padding: 0 20px;
+  font-size: 18px;
   color: white;
   cursor: pointer;
   font-family: "DynaPuff", cursive;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 /* ONLINE USERS */
@@ -227,5 +234,16 @@
   40% { 
     transform: scale(1);
     box-shadow: 0 0 5px #86d5ff; /* Neon glow */
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-content, .private-content {
+    padding: 15px 15px; /* Reduce main container padding */
+  }
+
+  .chat-input-area button, .private-input button {
+    padding: 0 15px; /* Minimum padding for the button */
+    font-size: 16px;
   }
 }

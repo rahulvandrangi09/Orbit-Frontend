@@ -86,16 +86,19 @@
   background: #112240;
   border: 2px solid #ff7e7e;
   box-shadow: 5px 5px 0px #86d5ff;
+  min-height: 55px;
+  align-items: stretch;
 }
 
 .chat-input-area input {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 15px;
+  padding: 12px 15px;
   color: #fff;
   outline: none;
-  font-size: 18px;
+  font-size: 16px;
+  width: 100%;
 }
 
 .chat-input-area button {
@@ -103,8 +106,8 @@
   color: #fff;
   border: none;
   border-left: 2px solid #ff7e7e;
-  padding: 0 30px;
-  font-size: 22px;
+  padding: 0 20px;
+  font-size: 18px;
   cursor: pointer;
   font-family: "DynaPuff", cursive;
 }
@@ -241,5 +244,16 @@
   40% { 
     transform: scale(1);
     box-shadow: 0 0 5px #86d5ff; /* Neon glow */
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-content, .private-content {
+    padding: 15px 15px; /* Reduce main container padding */
+  }
+
+  .chat-input-area button, .private-input button {
+    padding: 0 15px; /* Minimum padding for the button */
+    font-size: 16px;
   }
 }
