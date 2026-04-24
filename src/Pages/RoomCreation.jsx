@@ -53,12 +53,10 @@ const RoomCreation = () => {
         return;
       }
 
-      // Point these to your FRONTEND routes, not BASE_URL (which is backend)
       const frontendUrl = window.location.origin;
       if (data.room.type === "PUBLIC") {
         setGeneratedLink(`${frontendUrl}/publicroom/${data.room.id}`);
       } else {
-        // Use the inviteLink provided by backend but ensure it uses frontend domain
         const tokenPart = data.inviteLink.split('/').pop();
         setGeneratedLink(`${frontendUrl}/privateroom/${tokenPart}`);
       }
@@ -76,7 +74,6 @@ const RoomCreation = () => {
 
   return (
     <div className="room-creation-page">
-      {/* FIXED: Passing user directly */}
       <Navbar isLoggedIn={true} user={user} />
 
       <div className="creation-layout">

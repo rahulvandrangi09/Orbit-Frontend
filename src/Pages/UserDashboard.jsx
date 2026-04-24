@@ -10,14 +10,12 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🔥 NEW: State to hold the ticking relative time string
   const [relativeTime, setRelativeTime] = useState("");
 
   const token = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-  // 1. Load user and fetch rooms
   useEffect(() => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
@@ -56,7 +54,6 @@ const UserDashboard = () => {
     fetchUserRooms();
   }, [token, storedUser, url]);
 
-  // 🔥 2. THE DYNAMIC TIMER LOGIC
   useEffect(() => {
     if (!user.createdAt) return;
 
@@ -110,7 +107,6 @@ const UserDashboard = () => {
   // Inside UserDashboard.jsx, add this function right above the return statement:
 
   const handleDeleteRoom = async (roomId) => {
-    // 1. The Confirmation Box
     const confirmDelete = window.confirm(
       "⚠️ WARNING: Are you sure you want to permanently delete this room? All messages and members will be lost.",
     );
@@ -129,8 +125,7 @@ const UserDashboard = () => {
 
       if (response.ok) {
         // 2. Remove the room from the UI immediately without reloading the page
-        setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
-      } else {
+        else {
         alert(data.message || "Failed to delete room.");
       }
     } catch (err) {
@@ -198,7 +193,6 @@ const UserDashboard = () => {
               </div>
 
               {/* 🔥 Added a wrapper for the buttons to sit side-by-side */}
-              <div
                 style={{ display: "flex", gap: "10px", alignItems: "center" }}
               >
                 <button
@@ -215,7 +209,7 @@ const UserDashboard = () => {
                 </button>
 
                 {/* 🔥 The New Delete Button */}
-                <button
+                <but
                   style={{
                     backgroundColor: "transparent",
                     border: "2px solid #ff5c5c",

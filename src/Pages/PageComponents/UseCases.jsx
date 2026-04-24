@@ -18,7 +18,6 @@ const UseCases = () => {
           <span>🚀 Startup Founders</span>
           <span>🧠 Brainstorming Sessions</span>
 
-          {/* Duplicate for infinite scroll */}
           <span>💻 Developers & Tech Communities</span>
           <span>🎓 Students & Study Groups</span>
           <span>👥 Remote Teams</span>

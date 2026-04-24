@@ -11,7 +11,6 @@ const PublicRoomInteraction = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   
-  // 🔥 New States for Typing Indicator
   const [typingUsers, setTypingUsers] = useState([]);
   const typingTimeoutRef = useRef(null);
   const messageEndRef = useRef(null);
@@ -57,7 +56,6 @@ const PublicRoomInteraction = () => {
       setMessages((prev) => [...prev, msg]);
     };
 
-    // 🔥 Real-Time Listeners
     const handleUserTyping = ({ username }) => {
       setTypingUsers((prev) => (!prev.includes(username) ? [...prev, username] : prev));
     };
@@ -77,7 +75,6 @@ const PublicRoomInteraction = () => {
     };
   }, [roomid]);
 
-  // 🔥 Handle Typing Event
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
     socket.emit("typing", { roomId: roomid, username: currentUser.username });
@@ -146,8 +143,7 @@ const PublicRoomInteraction = () => {
             )}
 
             {/* 🔥 TYPING INDICATOR */}
-            {typingUsers.length > 0 && (
-              <div className="typing-indicator" style={{marginLeft: "15px"}}>
+            { <div className="typing-indicator" style={{marginLeft: "15px"}}>
                 {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing
                 <div className="typing-dots"><span></span><span></span><span></span></div>
               </div>

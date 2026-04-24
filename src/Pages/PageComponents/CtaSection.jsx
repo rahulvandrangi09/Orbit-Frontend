@@ -7,7 +7,6 @@ const CTA = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   return (
     <section className="cta-section scroll-animate" ref={ref}>
-      {/* Ensures the star background persists */}
       <div className="stars"></div>
 
       <div className="cta-container">
@@ -17,12 +16,10 @@ const CTA = () => {
         </p>
 
         <div className="hero-buttons">
-          {/* Enter Orbit leads to Login */}
           <Link to={user ? "/publicrooms" : "/login"}>
             <button className="btn-primary">🚀 Enter Orbit</button>
           </Link>
 
-          {/* Explore leads to the Public Rooms list */}
           <Link to="/publicrooms">
             <button className="btn-secondary">🌍 Explore Public Rooms</button>
           </Link>

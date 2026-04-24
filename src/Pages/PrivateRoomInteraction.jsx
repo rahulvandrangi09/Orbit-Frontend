@@ -6,10 +6,9 @@ import "./stylePages/privateRoomInteraction.css";
 
 const PrivateRoomInteraction = () => {
   const navigate = useNavigate();
-  const { roomid: token } = useParams(); // URL contains the secret token
+  const { roomid: token } = useParams();
   
-  // States
-  const [realRoomId, setRealRoomId] = useState(null); // The actual UUID for DB
+  const [realRoomId, setRealRoomId] = useState(null);
   const [roomName, setRoomName] = useState("Private Room");
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -23,19 +22,16 @@ const PrivateRoomInteraction = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
   const currentUser = JSON.parse(localStorage.getItem("user")) || { username: "Guest" };
 
-  // 1. Resolve Token to UUID (Fixes Foreign Key Error)
- // Updated useEffect for PrivateRoomInteraction.jsx
-useEffect(() => {
+  useEffect(() => {
   const resolveRoom = async () => {
     const jwt = localStorage.getItem("token");
     
-    // 🔥 NEW: Check if the token is already a UUID (from Dashboard)
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token);
 
     if (isUUID) {
       setRealRoomId(token);
       setLoading(false);
-      return; // Skip the fetch call
+      return;
     }
 
     try {
@@ -60,7 +56,6 @@ useEffect(() => {
   resolveRoom();
 }, [token, navigate, BASE_URL]);
 
-  // 2. Fetch Message History using realRoomId
   useEffect(() => {
     if (!realRoomId) return;
     const fetchMessages = async () => {
@@ -81,7 +76,6 @@ useEffect(() => {
   }, [realRoomId]);
 
   // 3. Socket Logic using realRoomId
-  useEffect(() => {
     if (!realRoomId) return;
 
     const jwt = localStorage.getItem("token");

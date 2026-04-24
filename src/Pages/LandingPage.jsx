@@ -13,14 +13,13 @@ const LandingPage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  const isLoggedIn = !!user; // this converts into bool 
+  const isLoggedIn = !!user; 
 
   return (
     <div className="landing-page">

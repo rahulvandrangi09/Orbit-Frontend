@@ -7,7 +7,6 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-  // Form States
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -15,8 +14,7 @@ const SignupForm = () => {
   });
   const [otp, setOtp] = useState("");
 
-  // UI States
-  const [step, setStep] = useState(1); // 1 = Signup, 2 = OTP Verification
+  const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,7 +23,6 @@ const SignupForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🔥 STEP 1: Handle Initial Signup (Creates unverified user & sends email)
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,9 +43,6 @@ const SignupForm = () => {
         return;
       }
 
-      // // Success! Move to Step 2 to enter the OTP
-      // setStep(2);
-      // setLoading(false);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/publicrooms");
@@ -59,7 +53,6 @@ const SignupForm = () => {
     }
   };
 
-  // 🔥 STEP 2: Handle OTP Verification (Logs user in if correct)
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -69,7 +62,6 @@ const SignupForm = () => {
       const response = await fetch(`${url}/api/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // We send the email from Step 1 along with the OTP they just typed
         body: JSON.stringify({ email: formData.email, otp }),
       });
 
@@ -104,7 +96,6 @@ const SignupForm = () => {
 
           {error && <div className="orbit-error">{error}</div>}
 
-          {/* --- STEP 1 UI: SIGNUP FORM --- */}
           {step === 1 && (
             <form onSubmit={handleSignupSubmit} className="auth-form">
               <div className="input-group">
@@ -166,7 +157,6 @@ const SignupForm = () => {
             </form>
           )}
 
-          {/* --- STEP 2 UI: OTP VERIFICATION FORM --- */}
           {step === 2 && (
             <form onSubmit={handleOtpSubmit} className="auth-form">
               <p

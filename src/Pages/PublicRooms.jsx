@@ -5,7 +5,7 @@ import "./stylePages/publicRooms.css";
 
 const PublicRooms = () => {
   const [rooms, setRooms] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // 🔥 State for search input
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -52,7 +52,6 @@ const PublicRooms = () => {
     fetchRooms();
   }, [token, url]);
 
-  // 🔥 Dynamic Filter: Filters rooms by name as the user types
   const filteredRooms = rooms.filter((room) =>
     room.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -80,14 +79,12 @@ const PublicRooms = () => {
         <section className="rooms-content">
           <h1 className="rooms-title">Public Rooms</h1>
 
-          {/* 🔥 Search Area moved above the grid for better UX  */}
           <div className="search-container">
             <input
               type="text"
               placeholder="Scan for available rooms..."
               className="search-input"
               value={searchTerm}
-              // 🔥 Remove from the line below
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
