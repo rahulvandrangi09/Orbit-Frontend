@@ -147,7 +147,7 @@ const PublicRoomInteraction = () => {
                 {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing
                 <div className="typing-dots"><span></span><span></span><span></span></div>
               </div>
-            )}
+            }
             <div ref={messageEndRef} />
           </div>
 
