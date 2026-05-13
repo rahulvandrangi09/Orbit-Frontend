@@ -10,13 +10,15 @@ const PublicRoomInteraction = () => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  
+
   const [typingUsers, setTypingUsers] = useState([]);
   const typingTimeoutRef = useRef(null);
   const messageEndRef = useRef(null);
 
   const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-  const currentUser = JSON.parse(localStorage.getItem("user")) || { username: "Guest" };
+  const currentUser = JSON.parse(localStorage.getItem("user")) || {
+    username: "Guest",
+  };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -26,7 +28,7 @@ const PublicRoomInteraction = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        
+
         if (res.ok) {
           const formatted = data.messages.map((msg) => ({
             id: msg.id,
@@ -57,7 +59,9 @@ const PublicRoomInteraction = () => {
     };
 
     const handleUserTyping = ({ username }) => {
-      setTypingUsers((prev) => (!prev.includes(username) ? [...prev, username] : prev));
+      setTypingUsers((prev) =>
+        !prev.includes(username) ? [...prev, username] : prev,
+      );
     };
 
     const handleUserStoppedTyping = ({ username }) => {
@@ -82,14 +86,17 @@ const PublicRoomInteraction = () => {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
     typingTimeoutRef.current = setTimeout(() => {
-      socket.emit("stopTyping", { roomId: roomid, username: currentUser.username });
+      socket.emit("stopTyping", {
+        roomId: roomid,
+        username: currentUser.username,
+      });
     }, 2000);
   };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-    
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("📡 Comm-link offline! Your spaceship must be logged in.");
@@ -99,7 +106,10 @@ const PublicRoomInteraction = () => {
 
     // Clear typing instantly
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-    socket.emit("stopTyping", { roomId: roomid, username: currentUser.username });
+    socket.emit("stopTyping", {
+      roomId: roomid,
+      username: currentUser.username,
+    });
 
     socket.emit("sendMessage", { roomId: roomid, message: newMessage });
 
@@ -120,21 +130,36 @@ const PublicRoomInteraction = () => {
 
       <main className="chat-layout">
         <aside className="chat-sidebar left">
-          <button className="sidebar-btn btn-secondary" onClick={() => navigate("/")}>Back To Home</button>
-          <button className="sidebar-btn btn-primary" onClick={() => navigate("/publicrooms")}>Rooms List</button>
+          <button
+            className="sidebar-btn btn-secondary"
+            onClick={() => navigate("/")}
+          >
+            Back To Home
+          </button>
+          <button
+            className="sidebar-btn btn-primary"
+            onClick={() => navigate("/publicrooms")}
+          >
+            Rooms List
+          </button>
         </aside>
 
         <section className="chat-content">
           <h2 className="room-header">Public Room</h2>
-          
+
           <div className="message-feed">
             {messages.length === 0 ? (
-              <p style={{ textAlign: "center", opacity: 0.7 }}>No messages yet. Start the conversation!</p>
+              <p style={{ textAlign: "center", opacity: 0.7 }}>
+                No messages yet. Start the conversation!
+              </p>
             ) : (
               messages.map((msg) => {
                 const isMe = msg.user === currentUser.username;
                 return (
-                  <div key={msg.id} className={`message-block ${isMe ? "me" : ""}`}>
+                  <div
+                    key={msg.id}
+                    className={`message-block ${isMe ? "me" : ""}`}
+                  >
                     <span className="user-label">{msg.user}</span>
                     <div className="bubble">{msg.text}</div>
                   </div>
@@ -143,11 +168,18 @@ const PublicRoomInteraction = () => {
             )}
 
             {/* 🔥 TYPING INDICATOR */}
-            { <div className="typing-indicator" style={{marginLeft: "15px"}}>
-                {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing
-                <div className="typing-dots"><span></span><span></span><span></span></div>
+            {/* 🔥 Update: Filter out empty strings and check length */}
+            {typingUsers.filter((u) => u && u.trim() !== "").length > 0 && (
+              <div className="typing-indicator" style={{ marginLeft: "15px" }}>
+                {typingUsers.filter((u) => u && u.trim() !== "").join(", ")} is
+                typing
+                <div className="typing-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
-            }
+            )}
             <div ref={messageEndRef} />
           </div>
 
