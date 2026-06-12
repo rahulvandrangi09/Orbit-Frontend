@@ -15,17 +15,19 @@ const PrivateRoomInteraction = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Bot State
+  const [summary, setSummary] = useState("");
+  const [isSummarizing, setIsSummarizing] = useState(false);
 
   const typingTimeoutRef = useRef(null);
   const messageEndRef = useRef(null);
 
-  const BASE_URL =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-  const currentUser =
-    JSON.parse(localStorage.getItem("user")) || {
-      username: "Guest",
-    };
+  const currentUser = JSON.parse(localStorage.getItem("user")) || {
+    username: "Guest",
+  };
 
   useEffect(() => {
     const resolveRoom = async () => {
@@ -43,14 +45,11 @@ const PrivateRoomInteraction = () => {
       }
 
       try {
-        const res = await fetch(
-          `${BASE_URL}/api/rooms/token/${token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
-        );
+        const res = await fetch(`${BASE_URL}/api/rooms/token/${token}`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
 
         const data = await res.json();
 
@@ -58,10 +57,7 @@ const PrivateRoomInteraction = () => {
           setRealRoomId(data.roomId);
           setRoomName(data.roomName);
         } else {
-          console.error(
-            "Token resolution failed:",
-            data.message
-          );
+          console.error("Token resolution failed:", data.message);
           alert("Invalid invite link!");
           navigate("/publicrooms");
         }
@@ -121,9 +117,7 @@ const PrivateRoomInteraction = () => {
       socket.connect();
     }
 
-    socket.on("roomUsers", (users) =>
-      setOnlineUsers(users)
-    );
+    socket.on("roomUsers", (users) => setOnlineUsers(users));
 
     socket.on("receiveMessage", (msg) =>
       setMessages((prev) => [...prev, msg])
@@ -131,20 +125,13 @@ const PrivateRoomInteraction = () => {
 
     socket.on("userTyping", ({ username }) => {
       setTypingUsers((prev) =>
-        !prev.includes(username)
-          ? [...prev, username]
-          : prev
+        !prev.includes(username) ? [...prev, username] : prev
       );
     });
 
-    socket.on(
-      "userStoppedTyping",
-      ({ username }) => {
-        setTypingUsers((prev) =>
-          prev.filter((u) => u !== username)
-        );
-      }
-    );
+    socket.on("userStoppedTyping", ({ username }) => {
+      setTypingUsers((prev) => prev.filter((u) => u !== username));
+    });
 
     socket.emit("joinRoom", realRoomId);
 
@@ -176,6 +163,24 @@ const PrivateRoomInteraction = () => {
         username: currentUser.username,
       });
     }, 2000);
+  };
+
+  const handleSummarize = async () => {
+    setIsSummarizing(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/rooms/${token}/summarize`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await response.json();
+      setSummary(data.summary);
+    } catch (err) {
+      setSummary("☄️ Failed to retrieve summary.");
+    }
+    setIsSummarizing(false);
   };
 
   const handleSendMessage = (e) => {
@@ -219,12 +224,7 @@ const PrivateRoomInteraction = () => {
     return (
       <div className="private-chat-page">
         <Navbar />
-        <h2
-          style={{
-            textAlign: "center",
-            marginTop: "100px",
-          }}
-        >
+        <h2 style={{ textAlign: "center", marginTop: "100px" }}>
           Establishing Secure Connection...
         </h2>
       </div>
@@ -233,12 +233,10 @@ const PrivateRoomInteraction = () => {
 
   return (
     <div className="private-chat-page">
-      <Navbar
-        isLoggedIn={true}
-        user={currentUser}
-      />
+      <Navbar isLoggedIn={true} user={currentUser} />
 
       <div className="private-layout">
+        {/* LEFT SIDEBAR */}
         <aside className="private-sidebar left">
           <button
             className="sidebar-btn secondary"
@@ -249,41 +247,28 @@ const PrivateRoomInteraction = () => {
 
           <button
             className="sidebar-btn primary"
-            onClick={() =>
-              navigate("/roomcreation")
-            }
+            onClick={() => navigate("/roomcreation")}
           >
             Create Room
           </button>
         </aside>
 
+        {/* MAIN CONTENT AREA */}
         <main className="private-content">
-          <h1 className="private-title">
-            {roomName}
-          </h1>
-
-          <p className="private-room-id">
-            Secure ID: {realRoomId}
-          </p>
-
+          <h1 className="private-title">{roomName}</h1>
+          <p className="private-room-id">Secure ID: {realRoomId}</p>
+          {/* MESSAGE FEED */}
           <div className="private-messages">
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={`private-message ${
-                  msg.user ===
-                  currentUser.username
-                    ? "me"
-                    : ""
+                  msg.user === currentUser.username ? "me" : ""
                 }`}
               >
-                <span className="private-user">
-                  {msg.user}
-                </span>
+                <span className="private-user">{msg.user}</span>
 
-                <div className="private-bubble">
-                  {msg.text}
-                </div>
+                <div className="private-bubble">{msg.text}</div>
               </div>
             ))}
 
@@ -306,10 +291,7 @@ const PrivateRoomInteraction = () => {
             <div ref={messageEndRef} />
           </div>
 
-          <form
-            className="private-input"
-            onSubmit={handleSendMessage}
-          >
+          <form className="private-input" onSubmit={handleSendMessage}>
             <input
               type="text"
               value={newMessage}
@@ -317,29 +299,19 @@ const PrivateRoomInteraction = () => {
               placeholder="Type your message..."
             />
 
-            <button type="submit">
-              Send
-            </button>
+            <button type="submit">Send</button>
           </form>
         </main>
 
+        {/* RIGHT SIDEBAR */}
         <aside className="private-sidebar right">
-          <h3>
-            Online ({onlineUsers.length})
-          </h3>
+          <h3>Online ({onlineUsers.length})</h3>
 
           {onlineUsers.map((user, idx) => (
-            <div
-              key={idx}
-              className="online-user online"
-            >
+            <div key={idx} className="online-user online">
               👤{" "}
               <span>
-                {user}{" "}
-                {user ===
-                currentUser.username
-                  ? "(You)"
-                  : ""}
+                {user} {user === currentUser.username ? "(You)" : ""}
               </span>
             </div>
           ))}

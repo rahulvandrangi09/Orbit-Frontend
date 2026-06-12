@@ -6,26 +6,25 @@ import { useNavigate } from "react-router-dom";
 const UserDashboard = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({
-    username: "Guest",
-    createdAt: null,
-  });
+  const token = localStorage.getItem("token");
+  const storedUser = localStorage.getItem("user");
+
+  // Load user directly, no "Guest" fallback
+  const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
 
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [relativeTime, setRelativeTime] = useState("");
 
-  const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-  const url =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   // Fetch user + rooms
   useEffect(() => {
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
+    // If no user is found, redirect to login instantly
+    if (!token || !user) {
+      navigate("/login");
+      return;
     }
 
     const fetchUserRooms = async () => {
@@ -60,11 +59,11 @@ const UserDashboard = () => {
     };
 
     fetchUserRooms();
-  }, [token, storedUser, url]);
+  }, [token, user, url, navigate]);
 
   // Live account duration timer
   useEffect(() => {
-    if (!user.createdAt) return;
+    if (!user || !user.createdAt) return;
 
     const calculateTime = () => {
       const start = new Date(user.createdAt).getTime();
@@ -79,15 +78,9 @@ const UserDashboard = () => {
       const seconds = Math.floor((diff / 1000) % 60);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const days = Math.floor(
-        (diff / (1000 * 60 * 60 * 24)) % 30
-      );
-      const months = Math.floor(
-        (diff / (1000 * 60 * 60 * 24 * 30)) % 12
-      );
-      const years = Math.floor(
-        diff / (1000 * 60 * 60 * 24 * 365)
-      );
+      const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 30);
+      const months = Math.floor((diff / (1000 * 60 * 60 * 24 * 30)) % 12);
+      const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
 
       let timeString = "";
 
@@ -105,7 +98,7 @@ const UserDashboard = () => {
     const timer = setInterval(calculateTime, 1000);
 
     return () => clearInterval(timer);
-  }, [user.createdAt]);
+  }, [user]);
 
   // Logout
   const handleLogout = async () => {
@@ -134,23 +127,17 @@ const UserDashboard = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `${url}/api/rooms/${roomId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${url}/api/rooms/${roomId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        setRooms((prevRooms) =>
-          prevRooms.filter((room) => room.id !== roomId)
-        );
-
+        setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
         alert("Room deleted successfully!");
       } else {
         alert(data.message || "Failed to delete room.");
@@ -161,63 +148,36 @@ const UserDashboard = () => {
     }
   };
 
+  // Prevent rendering if the user state is null while the redirect processes
+  if (!user) return null;
+
   return (
     <div className="dashboard-container">
       <Navbar isLoggedIn={true} user={user} />
 
       <section className="welcome-section">
-        <h1 className="welcome-title">
-          Welcome {user.username}
-        </h1>
+        <h1 className="welcome-title">Welcome {user.username}</h1>
 
         <p className="welcome-subtitle">
           Total Journey Duration:{" "}
-          <span
-            style={{
-              color: "#a3ff6c",
-              fontWeight: "bold",
-            }}
-          >
+          <span style={{ color: "#a3ff6c", fontWeight: "bold" }}>
             {relativeTime || "Calculating..."}
           </span>
         </p>
 
-        <p
-          style={{
-            fontSize: "14px",
-            opacity: 0.7,
-            marginTop: "5px",
-          }}
-        >
+        <p style={{ fontSize: "14px", opacity: 0.7, marginTop: "5px" }}>
           Coordinates established on:{" "}
-          {user.createdAt
-            ? new Date(
-                user.createdAt
-              ).toLocaleDateString()
-            : "—"}
+          {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "15px",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <button
-            className="go-home-btn"
-            onClick={() => navigate("/")}
-          >
+        <div style={{ display: "flex", gap: "15px", justifyContent: "center", marginTop: "20px" }}>
+          <button className="go-home-btn" onClick={() => navigate("/")}>
             Go Home
           </button>
 
           <button
             className="go-home-btn"
-            style={{
-              backgroundColor: "#ff7e7e",
-              color: "#112240",
-            }}
+            style={{ backgroundColor: "#ff7e7e", color: "#112240" }}
             onClick={handleLogout}
           >
             Logout
@@ -226,51 +186,26 @@ const UserDashboard = () => {
       </section>
 
       <section className="rooms-section">
-        <h2 className="rooms-heading">
-          Your Rooms
-        </h2>
+        <h2 className="rooms-heading">Your Rooms</h2>
 
         {loading ? (
           <p>Loading your rooms...</p>
         ) : rooms.length === 0 ? (
-          <p>
-            You haven’t joined or created any rooms
-            yet. Create one to get started!
-          </p>
+          <p>You haven’t joined or created any rooms yet. Create one to get started!</p>
         ) : (
           rooms.map((room) => (
-            <div
-              key={room.id}
-              className="room-card"
-            >
+            <div key={room.id} className="room-card">
               <div className="room-info">
                 <h3>{room.name}</h3>
-                <p>
-                  {room.type === "PUBLIC"
-                    ? "Public Room"
-                    : "Private Room"}
-                </p>
+                <p>{room.type === "PUBLIC" ? "Public Room" : "Private Room"}</p>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                }}
-              >
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <button
                   className="enter-btn"
                   onClick={() => {
-                    const path =
-                      room.type.toLowerCase() ===
-                      "public"
-                        ? "publicroom"
-                        : "privateroom";
-
-                    navigate(
-                      `/${path}/${room.id}`
-                    );
+                    const path = room.type.toLowerCase() === "public" ? "publicroom" : "privateroom";
+                    navigate(`/${path}/${room.id}`);
                   }}
                 >
                   Enter
@@ -278,31 +213,18 @@ const UserDashboard = () => {
 
                 <button
                   style={{
-                    backgroundColor:
-                      "transparent",
-                    border:
-                      "2px solid #ff5c5c",
+                    backgroundColor: "transparent",
+                    border: "2px solid #ff5c5c",
                     color: "#ff5c5c",
                     padding: "8px 12px",
                     cursor: "pointer",
-                    fontFamily:
-                      "DynaPuff, cursive",
-                    boxShadow:
-                      "3px 3px 0px #ff5c5c",
-                    transition:
-                      "0.2s ease",
+                    fontFamily: "DynaPuff, cursive",
+                    boxShadow: "3px 3px 0px #ff5c5c",
+                    transition: "0.2s ease",
                   }}
-                  onMouseOver={(e) =>
-                    (e.target.style.transform =
-                      "translate(-2px, -2px)")
-                  }
-                  onMouseOut={(e) =>
-                    (e.target.style.transform =
-                      "translate(0, 0)")
-                  }
-                  onClick={() =>
-                    handleDeleteRoom(room.id)
-                  }
+                  onMouseOver={(e) => (e.target.style.transform = "translate(-2px, -2px)")}
+                  onMouseOut={(e) => (e.target.style.transform = "translate(0, 0)")}
+                  onClick={() => handleDeleteRoom(room.id)}
                   title="Delete Room"
                 >
                   🗑️
@@ -312,11 +234,7 @@ const UserDashboard = () => {
           ))
         )}
 
-        {error && (
-          <p className="error-message">
-            {error}
-          </p>
-        )}
+        {error && <p className="error-message">{error}</p>}
       </section>
     </div>
   );

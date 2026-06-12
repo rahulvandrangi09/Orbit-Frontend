@@ -12,13 +12,17 @@ const PublicRooms = () => {
 
   const token = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
-  const currentUser = storedUser
-    ? JSON.parse(storedUser)
-    : { username: "Guest" };
+  const currentUser = storedUser ? JSON.parse(storedUser) : null;
 
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   useEffect(() => {
+    // Redirect unauthorized visitors immediately
+    if (!token || !currentUser) {
+      navigate("/login");
+      return;
+    }
+
     const fetchRooms = async () => {
       setLoading(true);
       setError("");
@@ -50,11 +54,14 @@ const PublicRooms = () => {
     };
 
     fetchRooms();
-  }, [token, url]);
+  }, [token, currentUser, url, navigate]);
 
   const filteredRooms = rooms.filter((room) =>
     room.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  // Prevent render crash before redirect occurs
+  if (!currentUser) return null;
 
   return (
     <div className="rooms-page">

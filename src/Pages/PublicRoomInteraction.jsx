@@ -15,6 +15,9 @@ const PublicRoomInteraction = () => {
   const typingTimeoutRef = useRef(null);
   const messageEndRef = useRef(null);
 
+  const [summary, setSummary] = useState("");
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
   const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
   const currentUser = JSON.parse(localStorage.getItem("user")) || {
     username: "Guest",
@@ -91,6 +94,24 @@ const PublicRoomInteraction = () => {
         username: currentUser.username,
       });
     }, 2000);
+  };
+
+  const handleSummarize = async () => {
+    setIsSummarizing(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/rooms/${roomid}/summarize`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const data = await response.json();
+      setSummary(data.summary);
+    } catch (err) {
+      setSummary("☄️ Failed to retrieve summary.");
+    }
+    setIsSummarizing(false);
   };
 
   const handleSendMessage = (e) => {

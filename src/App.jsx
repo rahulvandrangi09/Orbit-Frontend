@@ -10,6 +10,7 @@ import RoomCreation from "./Pages/RoomCreation";
 import PublicRoomInteraction from "./Pages/PublicRoomInteraction";
 import PrivateRoomInteraction from "./Pages/PrivateRoomInteraction";
 import UserDashboard from "./Pages/UserDashboard";
+import ChatWidget from "./Components/ChatWidget";
 const App = () => {
   return (
     <BrowserRouter>
@@ -24,6 +25,7 @@ const App = () => {
       <Route path="/privateroom/:roomid" element={<PrivateRoomInteraction />} />
       <Route path="/userdashboard" element={<UserDashboard />} />
     </Routes>
+    <ChatWidget />
   </div>
 </BrowserRouter>
 
