@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-
   const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
 
-  // Load user directly, no "Guest" fallback
-  const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
+  // 🔥 Initialize user state once to prevent infinite re-renders
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ const UserDashboard = () => {
 
   // Fetch user + rooms
   useEffect(() => {
-    // If no user is found, redirect to login instantly
+    // Redirect unauthorized visitors immediately
     if (!token || !user) {
       navigate("/login");
       return;
@@ -59,7 +60,7 @@ const UserDashboard = () => {
     };
 
     fetchUserRooms();
-  }, [token, user, url, navigate]);
+  }, [token, url, navigate]); // Removed 'user' object reference
 
   // Live account duration timer
   useEffect(() => {
@@ -94,9 +95,7 @@ const UserDashboard = () => {
     };
 
     calculateTime();
-
     const timer = setInterval(calculateTime, 1000);
-
     return () => clearInterval(timer);
   }, [user]);
 
@@ -105,9 +104,7 @@ const UserDashboard = () => {
     try {
       await fetch(`${url}/api/auth/logout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
     } catch (err) {
       console.error("Backend logout failed:", err);
@@ -129,9 +126,7 @@ const UserDashboard = () => {
     try {
       const response = await fetch(`${url}/api/rooms/${roomId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await response.json();

@@ -11,8 +11,12 @@ const PublicRooms = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  
+  // 🔥 Initialize user state once to prevent infinite re-renders
+  const [currentUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -54,7 +58,7 @@ const PublicRooms = () => {
     };
 
     fetchRooms();
-  }, [token, currentUser, url, navigate]);
+  }, [token, url, navigate]); // Removed 'currentUser' object reference
 
   const filteredRooms = rooms.filter((room) =>
     room.name.toLowerCase().includes(searchTerm.toLowerCase()),
